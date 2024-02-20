@@ -6,7 +6,6 @@ import { socket } from '../App'
 export const HomeScreen = ({navigation}: {navigation: any}) => {
   useEffect(()=>{
     socket.on('crypto', data => {
-      console.log(data)
       setCryptoList(data)
     })
     },[])
