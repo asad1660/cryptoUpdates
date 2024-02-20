@@ -1,35 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, Text, Pressable , FlatList, StyleSheet} from 'react-native';
 import { Crypto } from '../models/crypto';
-import io from 'socket.io-client';
-
-const socket = io('http://192.168.18.89:3000')
-socket.on('connect', ()=>{
-  console.log('socket connected')
-} )
-
-const cryptoList:Crypto[] = [
-    {
-        id:'1',
-        name:'BTC',
-        price:3800.13
-    },
-    {
-        id:'2',
-        name:'ETH',
-        price:3800.13
-    },
-    {
-        id:'3',
-        name:'SOL',
-        price:250.13
-    }
-
-]
-
-
+import { socket } from '../App'
 
 export const HomeScreen = ({navigation}: {navigation: any}) => {
+  useEffect(()=>{
+    socket.on('crypto', data => {
+      console.log(data)
+      setCryptoList(data)
+    })
+    },[])
+  const [cryptoList,setCryptoList] = useState();
   const openCryptoDetail = (id:string) => {
     navigation.navigate('Detail', {id:id});
   };
@@ -37,7 +18,7 @@ export const HomeScreen = ({navigation}: {navigation: any}) => {
     return (
        <Pressable style={styles.crypto} onPress={()=>openCryptoDetail(item.id)}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.price}>{item.price}</Text>
+        <Text style={styles.price}>{Math.round(item.price * 100 ) / 1000}</Text>
         </Pressable> 
     )
 }
